@@ -5,6 +5,7 @@ const birds = require('./docs/birds.js')
 
 function route(name) {
   router.use(name, routes(name))
+  console.log(123)
 }
 
 const routes = [
