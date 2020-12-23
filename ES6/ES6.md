@@ -372,3 +372,105 @@ set.forEach((value, key) => console.log(key + ' : ' + value))
 // 9 : 9
 ```
 - 遍历的应用
+**扩展运算符**
+```js
+let set = new Set(['red', 'green', 'blue']);
+let arr = [...set];
+// ['red', 'green', 'blue']
+```
+**扩展运算符和Set结构结合，去除数组的重复成员**
+```js
+let arr = [3, 5, 2, 2, 5, 5];
+let unique = [...new Set(arr)];
+// [3, 5, 2]
+```
+**使用数组的`map`和`filter`**
+```js
+let set = new Set([1,2,3,4,5]);
+set = new Set([...set].filter((x)=>(x%2)==0));
+
+let set = new Set([1,2,3,4,5]);
+set = new Set([...set].map((x)=>x*2));
+
+```
+**并集（Union），交集（Intersect），差集（Difference）**
+```js
+let a = new Set([1, 2, 3]);
+let b = new Set([4, 3, 2]);
+
+//并集
+let union = new Set([...a, ...b]);
+
+// 交集
+let intersect = new Set([...a].filter(x=>b.has(x)));
+
+//a相对于b的差集
+let difference = new Set([...a].filter(x=>!b.has(x)))
+
+```
+
+#### WeakSet
+
+```js
+ new WeakSet([iterable]);
+```
+
+##### 含义
+- 与Set的区别
+	- WeakSet的成员只能是对象，而不能是其他的类型的值
+	- WeakSet中的对象都是弱引用，垃圾回收机制不考虑其对该对象的引用
+```js
+const ws = new WeakSet();
+ws.add(1)
+// TypeError: Invalid value used in weak set
+ws.add(Symbol())
+// TypeError: invalid value used in weak set
+ws.add([1,2,3])
+// TypeError: invalid value used in weak set
+```
+- 三个方法
+	- `WeakSet.prototype.add(value)`：向 WeakSet 实例添加一个新成员
+	- `WeakSet.prototype.delete(value)`：清除 WeakSet 实例的指定成员。
+	- `WeakSet.prototype.has(value)`：返回一个布尔值，表示某个值是否在 WeakSet 实例之中。
+	- WeakSet 是无法遍历的，也没有`size`属性和`forEach`方法
+```js
+const ws = new WeakSet();
+const obj = {};
+const foo = {};
+
+ws.add(window);
+ws.add(obj);
+
+ws.has(window); //true
+ws.has(foo); //false
+
+ws.delete(window); 
+ws.has(window); //false
+
+//没有size属性和forEach方法
+ws.size // undefined
+ws.forEach // undefined
+
+ws.forEach(function(item){ console.log('WeakSet has ' + item)})
+// TypeError: undefined is not a function
+```
+- 相较于Set，WeakSet有一个优势：储存DOM节点，而不用担心这些节点从文档移除时，会引发内存泄露
+下面的代码保证了`Foo`的实例方法，只能在`Foo`的实例上调用。这里使用 WeakSet 的好处是， `foos`对实例的引用，不会被计入内存回收机制，所以删除实例的时候，不用考虑`foos`，也不会出现内存泄漏。
+```js
+const foos = new WeakSet();
+class Foo{
+	constructor(){
+		foos.add(this)
+	}
+	create(){
+		if(!foos.has(this)){
+			throw new TypeError('Foo.prototype.create 只能在Foo的实例上调用！')
+		}
+	}
+}
+```
+
+#### Map
+
+
+#### WeakMap
